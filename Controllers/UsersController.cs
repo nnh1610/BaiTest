@@ -47,7 +47,7 @@ namespace STTechUserManagement.Controllers
             return View(user);
         }
 
-        // GET: Users/Create (ĐÃ SỬA: Hiển thị form VỚI MÃ GỢI Ý)
+        // GET: Users/Create (Hiển thị form VỚI MÃ GỢI Ý)
         public async Task<IActionResult> Create()
         {
             string newMa = "NSST0001"; // Mã mặc định
@@ -72,15 +72,14 @@ namespace STTechUserManagement.Controllers
             return View(newUser); // Trả về View với mã gợi ý đúng
         }
 
-        // POST: Users/Create (ĐÃ SỬA: Xử lý mã do người dùng nhập)
+        // POST: Users/Create (Xử lý mã do người dùng nhập)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Ma,HoTen,NgayThangNamSinh,GioiTinh,Email,DienThoai,DiaChi")] User user)
         {
-            // Thêm 1 bước kiểm tra: Mã này đã tồn tại chưa?
+            // Kiểm tra: Mã này đã tồn tại chưa?
             if (await _context.Users.AnyAsync(u => u.Ma == user.Ma))
             {
-                // Nếu tồn tại, trả về lỗi
                 ModelState.AddModelError("Ma", "Mã người dùng này đã tồn tại. Vui lòng chọn mã khác.");
             }
             
@@ -146,3 +145,42 @@ namespace STTechUserManagement.Controllers
 
         // GET: Users/Delete/5 (Hiển thị form xác nhận xóa)
         public async Task<IActionResult> Delete(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return NotFound();
+            }
+
+            var user = await _context.Users
+                .FirstOrDefaultAsync(m => m.Ma == id);
+            
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return View(user);
+        }
+
+        // POST: Users/Delete/5 (Xử lý xóa)
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user != null)
+            {
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync(); 
+            }
+            
+            return RedirectToAction(nameof(Index));
+        }
+
+        // Hàm helper (hỗ trợ)
+        private bool UserExists(string id)
+        {
+            return _context.Users.Any(e => e.Ma == id);
+        }
+    }
+}
