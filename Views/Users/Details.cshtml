@@ -1,0 +1,37 @@
+@model STTechUserManagement.Models.User
+
+@{
+    ViewData["Title"] = "Chi tiết Người dùng";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-3">Mã</dt>
+        <dd class = "col-sm-9">@Html.DisplayFor(model => model.Ma)</dd>
+        
+        <dt class = "col-sm-3">Họ Tên</dt>
+        <dd class = "col-sm-9">@Html.DisplayFor(model => model.HoTen)</dd>
+        
+        <dt class = "col-sm-3">Ngày Sinh</dt>
+        <dd class = "col-sm-9">@Model.NgayThangNamSinh.ToString("dd/MM/yyyy")</dd>
+        
+        <dt class = "col-sm-3">Giới Tính</dt>
+        <dd class = "col-sm-9">@Html.DisplayFor(model => model.GioiTinh)</dd>
+        
+        <dt class = "col-sm-3">Email</dt>
+        <dd class = "col-sm-9">@Html.DisplayFor(model => model.Email)</dd>
+        
+        <dt class = "col-sm-3">Điện Thoại</dt>
+        <dd class = "col-sm-9">@Html.DisplayFor(model => model.DienThoai)</dd>
+        
+        <dt class = "col-sm-3">Địa Chỉ</dt>
+        <dd class = "col-sm-9">@Html.DisplayFor(model => model.DiaChi)</dd>
+    </dl>
+</div>
+<div class="mt-4">
+    <a asp-action="Edit" asp-route-id="@Model.Ma" class="btn btn-primary">Chỉnh sửa</a> 
+    <a asp-action="Index" class="btn btn-secondary">Quay lại danh sách</a>
+</div>

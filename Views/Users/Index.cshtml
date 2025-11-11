@@ -1,0 +1,52 @@
+@model X.PagedList.IPagedList<STTechUserManagement.Models.User>
+@using X.PagedList.Mvc.Core
+@using X.PagedList.Web.Common
+
+@{
+    ViewData["Title"] = "Danh sách Người dùng";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Tạo người dùng mới</a>
+</p>
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Mã</th>
+            <th>Họ Tên</th>
+            <th>Email</th>
+            <th>Điện Thoại</th>
+            <th>Giới Tính</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Ma)</td>
+                <td>@Html.DisplayFor(modelItem => item.HoTen)</td>
+                <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                <td>@Html.DisplayFor(modelItem => item.DienThoai)</td>
+                <td>@Html.DisplayFor(modelItem => item.GioiTinh)</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Ma" class="btn btn-sm btn-info">Sửa</a>
+                    <a asp-action="Details" asp-route-id="@item.Ma" class="btn btn-sm btn-secondary">Chi tiết</a>
+                    <a asp-action="Delete" asp-route-id="@item.Ma" class="btn btn-sm btn-danger">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="pagination-container">
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }),
+        new PagedListRenderOptions
+        {
+            ContainerDivClasses = new[] { "pagination" },
+            LiElementClasses = new[] { "page-item" },
+            PageClasses = new[] { "page-link" }
+        })
+</div>
