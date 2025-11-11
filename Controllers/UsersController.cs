@@ -47,16 +47,12 @@ namespace STTechUserManagement.Controllers
             return View(user);
         }
 
-        // ==========================================================
-        // SỬA LỖI LOGIC NẰM Ở 2 HÀM DƯỚI ĐÂY
-        // ==========================================================
-
         // GET: Users/Create (ĐÃ SỬA: Hiển thị form VỚI MÃ GỢI Ý)
         public async Task<IActionResult> Create()
         {
             string newMa = "NSST0001"; // Mã mặc định
 
-            // SỬA LỖI LOGIC: Chỉ tìm mã "NSST" cuối cùng
+            // Logic: Chỉ tìm mã "NSST" cuối cùng để gợi ý
             var lastNsstUser = await _context.Users
                 .Where(u => u.Ma.StartsWith("NSST")) // Chỉ tìm các mã bắt đầu bằng "NSST"
                 .OrderByDescending(u => u.Ma)       // Sắp xếp chúng
@@ -71,7 +67,6 @@ namespace STTechUserManagement.Controllers
                     newMa = "NSST" + num.ToString("D4"); // Format "0002", "0003"...
                 }
             }
-            // --- Hết phần sửa lỗi ---
 
             var newUser = new User { Ma = newMa }; 
             return View(newUser); // Trả về View với mã gợi ý đúng
@@ -91,8 +86,6 @@ namespace STTechUserManagement.Controllers
             
             if (ModelState.IsValid)
             {
-                // (Toàn bộ logic tạo mã tự động CŨ đã bị XÓA ở đây)
-
                 _context.Add(user);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -101,10 +94,6 @@ namespace STTechUserManagement.Controllers
             // Nếu có lỗi (trùng mã, thiếu tên...), trả lại form cho người dùng sửa
             return View(user);
         }
-
-        // ==========================================================
-        // CÁC HÀM BÊN DƯỚI GIỮ NGUYÊN
-        // ==========================================================
 
         // GET: Users/Edit/5 (Hiển thị form sửa)
         public async Task<IActionResult> Edit(string id)
@@ -157,42 +146,3 @@ namespace STTechUserManagement.Controllers
 
         // GET: Users/Delete/5 (Hiển thị form xác nhận xóa)
         public async Task<IActionResult> Delete(string id)
-        {
-            if (string.IsNullOrEmpty(id))
-            {
-                return NotFound();
-            }
-
-            var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.Ma == id);
-            
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return View(user);
-        }
-
-        // POST: Users/Delete/5 (Xử lý xóa)
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-            var user = await _context.Users.FindAsync(id);
-            if (user != null)
-            {
-                _context.Users.Remove(user);
-                await _context.SaveChangesAsync(); 
-            }
-            
-            return RedirectToAction(nameof(Index));
-        }
-
-        // Hàm helper
-        private bool UserExists(string id)
-        {
-            return _context.Users.Any(e => e.Ma == id);
-        }
-    }
-}
